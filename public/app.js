@@ -38,9 +38,17 @@ async function createRoom() {
   registerPeerConnectionListeners();
 
   // Add code for creating a room here
-  
+  db.collection("rooms").add({
+    id: JSON.stringify(Math.round(Math.random() * 10)),
+  })
+    .then(function (docRef) {
+      console.log("Document written with ID: ", docRef.id);
+    })
+    .catch(function (error) {
+      console.error("Error adding document: ", error);
+    });
   // Code for creating room above
-  
+
   localStream.getTracks().forEach(track => {
     peerConnection.addTrack(track, localStream);
   });
@@ -75,13 +83,13 @@ function joinRoom() {
   document.querySelector('#joinBtn').disabled = true;
 
   document.querySelector('#confirmJoinBtn').
-      addEventListener('click', async () => {
-        roomId = document.querySelector('#room-id').value;
-        console.log('Join room: ', roomId);
-        document.querySelector(
-            '#currentRoom').innerText = `Current room is ${roomId} - You are the callee!`;
-        await joinRoomById(roomId);
-      }, {once: true});
+    addEventListener('click', async () => {
+      roomId = document.querySelector('#room-id').value;
+      console.log('Join room: ', roomId);
+      document.querySelector(
+        '#currentRoom').innerText = `Current room is ${roomId} - You are the callee!`;
+      await joinRoomById(roomId);
+    }, { once: true });
   roomDialog.open();
 }
 
@@ -123,7 +131,7 @@ async function joinRoomById(roomId) {
 
 async function openUserMedia(e) {
   const stream = await navigator.mediaDevices.getUserMedia(
-      {video: true, audio: true});
+    { video: true, audio: true });
   document.querySelector('#localVideo').srcObject = stream;
   localStream = stream;
   remoteStream = new MediaStream();
@@ -179,7 +187,7 @@ async function hangUp(e) {
 function registerPeerConnectionListeners() {
   peerConnection.addEventListener('icegatheringstatechange', () => {
     console.log(
-        `ICE gathering state changed: ${peerConnection.iceGatheringState}`);
+      `ICE gathering state changed: ${peerConnection.iceGatheringState}`);
   });
 
   peerConnection.addEventListener('connectionstatechange', () => {
@@ -192,7 +200,7 @@ function registerPeerConnectionListeners() {
 
   peerConnection.addEventListener('iceconnectionstatechange ', () => {
     console.log(
-        `ICE connection state change: ${peerConnection.iceConnectionState}`);
+      `ICE connection state change: ${peerConnection.iceConnectionState}`);
   });
 }
 
